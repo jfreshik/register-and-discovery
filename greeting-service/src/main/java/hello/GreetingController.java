@@ -11,4 +11,9 @@ public class GreetingController {
     public String greeting(@RequestParam String name){
         return "Hello " + name;
     }
+
+    @GetMapping("/hello")
+    public String hello() {
+        return "world";
+    }
 }
