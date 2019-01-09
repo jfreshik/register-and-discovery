@@ -1,0 +1,14 @@
+server:
+  port: 8080
+
+eureka:
+  client:
+    register-with-eureka: false
+    # eureka 클라이언트 정보만 fetch
+    fetch-registry: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ["health", "info", "metrics"]
