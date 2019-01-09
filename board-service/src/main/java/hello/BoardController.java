@@ -1,5 +1,6 @@
 package hello;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +16,9 @@ public class BoardController {
     @Autowired
     private GreetingClient greetingClient;
 
+    @Autowired
+    private UnstableClient unstableClient;
+
     @GetMapping("/boards")
     @ResponseBody
     public List<Board> getContentList() {
@@ -24,13 +28,13 @@ public class BoardController {
                 new Board(3, "asdfasdf", "fkdjfslkjdlk"));
     }
 
-    @GetMapping("/get-hello")
-    public String getHello() {
+    @GetMapping("/greeting/hello")
+    public String getGreetingHello() {
 
         return greetingClient.hello();
     }
 
-    @GetMapping("/get-greeting")
+    @GetMapping("/greeting/greeting")
     public String getGreeting(@RequestParam String name){
 
 //        Map<String, Object> queryMap = new HashMap<>();
@@ -39,8 +43,18 @@ public class BoardController {
         return greetingClient.greeting(name);
     }
 
-    @GetMapping("/get-application-name")
+    @GetMapping("/greeting/application-name")
     public List<Object> getApplicationName(@RequestParam String name){
         return greetingClient.getApplicationInfo(name);
+    }
+
+    @GetMapping("/unstable/hello")
+    @HystrixCommand(fallbackMethod = "unstableFailed")
+    public String getUnstableHello(){
+        return unstableClient.hello();
+    }
+
+    public String unstableFailed(){
+        return "Failed";
     }
 }
